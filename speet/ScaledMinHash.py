@@ -41,11 +41,11 @@ class ScaledMinHash(object):
         if self.scaled != other.scaled or self.ksize != other.ksize:
             raise ValueError("incompatible ScaledMinHash comparison")
 
-        if not len(other):
+        if not len(self):
             return 0.
 
         intersection = self.hashes.intersection(other.hashes)
-        return len(intersection) / len(other)
+        return len(intersection) / len(self)
         
     def __len__(self):
         return len(self.hashes)

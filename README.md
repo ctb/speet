@@ -30,5 +30,12 @@ This sketches all ~5000 files and takes about 30 seconds on my laptop.
 4. Search all the files with a fragmented `configure` file:
 
 ```
-speet fragment_query work/cpython-master/configure work
+speet fragment_query work/cpython-master/Lib/os.py work
+```
+
+5. Confirm one of the intermediate results:
+
+```
+speet search work/cpython-master/{Lib/os.py,Modules/posixmodule.c}.sketch
+speet contained_by work/cpython-master/{Lib/os.py,Modules/posixmodule.c}.sketch
 ```
