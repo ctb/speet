@@ -1,6 +1,7 @@
-import sys
 import argparse
 import os
+import sys
+
 from . import ScaledMinHash
 
 
@@ -38,7 +39,7 @@ def sketchall(args):
 
             mh.save(filename + '.sketch')
             n += 1
-    
+
     print('\nsketched {}'.format(n))
 
 
@@ -73,7 +74,7 @@ def fragment_query(args):
                 continue
 
             filename = os.path.join(root, name)
-                
+
             print(u'\r\033[K', end='')
             print("... loading sketch {}".format(name), end='\r')
             sketch = ScaledMinHash.load(filename)
@@ -101,7 +102,7 @@ def fragment_query(args):
             for i in range(min(args.num_to_report, len(matches))):
                 cont, match = matches[i]
                 print("   {:.1f}% {}".format(cont*100, match.name))
-        
+
 
 
 def search(args):

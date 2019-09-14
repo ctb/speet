@@ -1,5 +1,6 @@
-import mmh3
 import pickle
+
+import mmh3
 
 MAX_HASH=2**64 - 1
 
@@ -14,7 +15,7 @@ class ScaledMinHash(object):
         self.ksize = ksize
         self.hashes = set()
         self.name = name
-        
+
     def add_text(self, text):
         ksize = self.ksize
         max_hash = MAX_HASH / self.scaled
@@ -46,7 +47,7 @@ class ScaledMinHash(object):
 
         intersection = self.hashes.intersection(other.hashes)
         return len(intersection) / len(self)
-        
+
     def __len__(self):
         return len(self.hashes)
 
