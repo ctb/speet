@@ -2,4 +2,4 @@
 
 __version__ = "0.1"
 
-from .ScaledMinHash import ScaledMinHash
+from .ScaledMinHash import ScaledMinHash  # noqa

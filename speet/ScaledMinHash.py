@@ -2,7 +2,8 @@ import pickle
 
 import mmh3
 
-MAX_HASH=2**64 - 1
+MAX_HASH = 2 ** 64 - 1
+
 
 def hashme(kmer):
     "hash string of length k"
@@ -34,7 +35,8 @@ class ScaledMinHash(object):
 
         intersection = self.hashes.intersection(other.hashes)
         union = self.hashes.union(other.hashes)
-        if not len(union): return 0
+        if not len(union):
+            return 0
 
         return len(intersection) / len(union)
 

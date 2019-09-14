@@ -23,7 +23,7 @@ def sketchall(args):
     "Create scaled MinHashes for everything under this directory."
 
     n = 0
-    for root, dirs, files in os.walk(args.directory):
+    for root, _, files in os.walk(args.directory):
         for name in files:
             print(u'\r\033[K', end='')
             print("... sketch #{} from file {} ".format(n, name), end='\r')
@@ -68,7 +68,7 @@ def fragment_query(args):
 
     # now, load all the subject sketches
     subjects = []
-    for root, dirs, files in os.walk(args.directory):
+    for root, _, files in os.walk(args.directory):
         for name in files:
             if not name.endswith('.sketch'):
                 continue
@@ -104,11 +104,10 @@ def fragment_query(args):
                 print("   {:.1f}% {}".format(cont*100, match.name))
 
 
-
 def search(args):
     "Find Jaccard similarities between query and subjects."
     query = ScaledMinHash.load(args.query)
-    subjects = [ ScaledMinHash.load(filename) for filename in args.subjects ]
+    subjects = [ScaledMinHash.load(filename) for filename in args.subjects]
 
     results = []
     for ss in subjects:
@@ -124,7 +123,7 @@ def search(args):
 def contained_by(args):
     "Find containment of query in subjects."
     query = ScaledMinHash.load(args.query)
-    subjects = [ ScaledMinHash.load(filename) for filename in args.subjects ]
+    subjects = [ScaledMinHash.load(filename) for filename in args.subjects]
 
     results = []
     for ss in subjects:
