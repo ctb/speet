@@ -18,6 +18,7 @@ def sketch(args):
 
 
 def search(args):
+    "Find Jaccard similarities between query and subjects."
     query = ScaledMinHash.load(args.query)
     subjects = [ ScaledMinHash.load(filename) for filename in args.subjects ]
 
@@ -29,7 +30,23 @@ def search(args):
 
     results.sort(reverse=True)
     for similarity, ss in results:
-        print('{} {}'.format(similarity, ss.name))
+        print('{:.3f} {}'.format(similarity, ss.name))
+
+
+def contained_by(args):
+    "Find containment of query in subjects."
+    query = ScaledMinHash.load(args.query)
+    subjects = [ ScaledMinHash.load(filename) for filename in args.subjects ]
+
+    results = []
+    for ss in subjects:
+        cont = query.contained_by(ss)
+        if cont:
+            results.append((cont, ss))
+
+    results.sort(reverse=True)
+    for cont, ss in results:
+        print('{:.3f} {}'.format(cont, ss.name))
 
 
 def main(argv):
@@ -46,6 +63,11 @@ def main(argv):
     search_p.add_argument("query")
     search_p.add_argument("subjects", nargs='+')
     search_p.set_defaults(func=search)
+
+    cont_p = subparsers.add_parser("contained_by")
+    cont_p.add_argument("query")
+    cont_p.add_argument("subjects", nargs='+')
+    cont_p.set_defaults(func=contained_by)
 
     args = p.parse_args(argv)
     if args.func:
