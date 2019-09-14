@@ -34,6 +34,7 @@ def search(args):
 
 def main(argv):
     p = argparse.ArgumentParser()
+    p.set_defaults(func=None)
     subparsers = p.add_subparsers()
 
     sketch_p = subparsers.add_parser("sketch")
@@ -47,7 +48,11 @@ def main(argv):
     search_p.set_defaults(func=search)
 
     args = p.parse_args(argv)
-    return args.func(args) or 0
+    if args.func:
+        return args.func(args) or 0
+    else:
+        print("Please specify a subcommand - use --help for options.")
+        return 0
 
 
 if __name__ == '__main__':
