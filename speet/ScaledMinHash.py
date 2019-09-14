@@ -24,7 +24,7 @@ class ScaledMinHash(object):
 
         # kmerize, hash, and add everything under 2**64/scaled
         for i in range(0, len(text) - ksize + 1):
-            kmer = text[i:i+ksize]
+            kmer = text[i : i + ksize]
             hashval = hashme(kmer)
             if hashval < max_hash:
                 hashes.add(hashval)
@@ -45,7 +45,7 @@ class ScaledMinHash(object):
             raise ValueError("incompatible ScaledMinHash comparison")
 
         if not len(self):
-            return 0.
+            return 0.0
 
         intersection = self.hashes.intersection(other.hashes)
         return len(intersection) / len(self)
@@ -55,9 +55,9 @@ class ScaledMinHash(object):
 
     @classmethod
     def load(cls, filename):
-        with open(filename, 'rb') as fp:
+        with open(filename, "rb") as fp:
             return pickle.load(fp)
 
     def save(self, filename):
-        with open(filename, 'wb') as fp:
+        with open(filename, "wb") as fp:
             pickle.dump(self, fp)

@@ -23,4 +23,4 @@ def test_similarity_2():
     m1.add_text("world")
     m2.add_text("fools")
 
-    assert m1.similarity(m2) == 1/3
+    assert m1.similarity(m2) == 1 / 3
