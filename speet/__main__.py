@@ -4,10 +4,11 @@ from . import ScaledMinHash
 
 
 def sketch(args):
+    "Create scaled MinHashes for the given textfile."
     with open(args.textfile, 'rt') as fp:
         text = fp.read()
 
-    mh = ScaledMinHash()
+    mh = ScaledMinHash(name=args.textfile)
     mh.add_text(text)
 
     mh.save(args.output)
@@ -27,8 +28,8 @@ def search(args):
             results.append((similarity, ss))
 
     results.sort(reverse=True)
-    for (similarity, ss), filename in zip(results, args.subjects):
-        print('{} {}'.format(similarity, filename))
+    for similarity, ss in results:
+        print('{} {}'.format(similarity, ss.name))
 
 
 def main(argv):

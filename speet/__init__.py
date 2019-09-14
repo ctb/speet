@@ -9,10 +9,11 @@ def hashme(kmer):
 
 
 class ScaledMinHash(object):
-    def __init__(self, scaled=500, ksize=5):
+    def __init__(self, scaled=500, ksize=5, name=""):
         self.scaled = scaled
         self.ksize = ksize
         self.hashes = set()
+        self.name = name
         
     def add_text(self, text):
         ksize = self.ksize
