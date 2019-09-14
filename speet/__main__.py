@@ -1,5 +1,6 @@
 import sys
 import argparse
+import os
 from . import ScaledMinHash
 
 
@@ -15,6 +16,92 @@ def sketch(args):
     print('read {}, hashed to {}, saved into {}'.format(len(text),
                                                         len(mh),
                                                         args.output))
+
+
+def sketchall(args):
+    "Create scaled MinHashes for everything under this directory."
+
+    n = 0
+    for root, dirs, files in os.walk(args.directory):
+        for name in files:
+            print(u'\r\033[K', end='')
+            print("... sketch #{} from file {} ".format(n, name), end='\r')
+            filename = os.path.join(root, name)
+            with open(filename, 'rt') as fp:
+                try:
+                    text = fp.read()
+                except UnicodeDecodeError:
+                    continue
+
+            mh = ScaledMinHash(name=filename)
+            mh.add_text(text)
+
+            mh.save(filename + '.sketch')
+            n += 1
+    
+    print('\nsketched {}'.format(n))
+
+
+def fragment_query(args):
+    "Fragment query into many pieces, find in directory of sketches."
+    # first, fragment the query.
+    fragments = []
+
+    chunk = args.fragment_size
+    with open(args.query, 'rt') as fp:
+        n = 0
+        while 1:
+            text = fp.read(chunk)
+            if not text:
+                break
+
+            name = '{} fragment {}-{}'.format(args.query, chunk*n, chunk*(n+1))
+            sketch = ScaledMinHash(name=name)
+            sketch.add_text(text)
+            fragments.append(sketch)
+
+            n += 1
+
+    print("got {} fragments of size {} from {}".format(len(fragments),
+                                                       chunk, args.query))
+
+    # now, load all the subject sketches
+    subjects = []
+    for root, dirs, files in os.walk(args.directory):
+        for name in files:
+            if not name.endswith('.sketch'):
+                continue
+
+            filename = os.path.join(root, name)
+                
+            print(u'\r\033[K', end='')
+            print("... loading sketch {}".format(name), end='\r')
+            sketch = ScaledMinHash.load(filename)
+
+            subjects.append(sketch)
+
+    print("\nloaded {} sketches from {}".format(len(subjects), args.directory))
+
+    # now... search!!
+    for query in fragments:
+        matches = []
+        for subject in subjects:
+            cont = query.contained_by(subject)
+            if cont > args.threshold:
+                matches.append((cont, subject))
+
+        if len(matches) > 0.9*len(subjects):
+            print('found {} in 90% or more; not reporting'.format(query.name))
+
+        if len(matches):
+            print('found {} matches to {}'.format(len(matches), query.name))
+
+            matches.sort(reverse=True, key=lambda x: x[0])
+
+            for i in range(min(args.num_to_report, len(matches))):
+                cont, match = matches[i]
+                print("   {:.1f}% {}".format(cont*100, match.name))
+        
 
 
 def search(args):
@@ -49,7 +136,10 @@ def contained_by(args):
         print('{:.3f} {}'.format(cont, ss.name))
 
 
-def main(argv):
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv[1:]
+
     p = argparse.ArgumentParser()
     p.set_defaults(func=None)
     subparsers = p.add_subparsers()
@@ -68,6 +158,20 @@ def main(argv):
     cont_p.add_argument("query")
     cont_p.add_argument("subjects", nargs='+')
     cont_p.set_defaults(func=contained_by)
+
+    sketchall_p = subparsers.add_parser('sketchall')
+    sketchall_p.add_argument("directory")
+    sketchall_p.set_defaults(func=sketchall)
+
+    fragment_query_p = subparsers.add_parser('fragment_query')
+    fragment_query_p.add_argument("query")
+    fragment_query_p.add_argument("directory")
+    fragment_query_p.add_argument("--fragment-size", default=5000,
+                                  help='size (in char) of query fragments')
+    fragment_query_p.add_argument("--threshold", default=0.2,
+                                  help='fraction of query fragment required')
+    fragment_query_p.add_argument("--num-to-report", default=5)
+    fragment_query_p.set_defaults(func=fragment_query)
 
     args = p.parse_args(argv)
     if args.func:

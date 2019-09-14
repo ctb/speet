@@ -41,7 +41,7 @@ class ScaledMinHash(object):
         if self.scaled != other.scaled or self.ksize != other.ksize:
             raise ValueError("incompatible ScaledMinHash comparison")
 
-        if not len(self.hashes) or not len(self):
+        if not len(other):
             return 0.
 
         intersection = self.hashes.intersection(other.hashes)
