@@ -2,3 +2,5 @@
 __pycache__
 .eggs
 speet.egg-info
+.tox
+.isort.cfg

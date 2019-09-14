@@ -1,0 +1,40 @@
+[build-system]
+requires = ["flit"]
+build-backend = "flit.buildapi"
+
+[tool.flit.metadata]
+module = "speet"
+author = "C. Titus Brown"
+author-email = "titus@idyll.org"
+home-page = "https://github.com/ctb/speet"
+classifiers = [
+    "License :: OSI Approved :: BSD License",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+]
+requires = [
+    "mmh3",
+]
+requires-python = ">=3.5"
+description-file = "README.md"
+
+[tool.flit.scripts]
+speet = "speet.__main__:main"
+
+[tool.flit.metadata.requires-extra]
+testing = [
+    "pytest >=2.7.3",
+    "pytest-cov",
+]
+docs = [
+    "sphinx >= 2.0.0, < 3",
+    "pygments-github-lexers >= 0.0.5",
+    "sphinxcontrib-autoprogram >= 0.1.5",
+]
+
+[tool.isort]
+known_third_party = ["mmh3"]
