@@ -39,3 +39,13 @@ speet fragment_query work/cpython-master/Lib/os.py work
 speet search work/cpython-master/{Lib/os.py,Modules/posixmodule.c}.sketch
 speet contained_by work/cpython-master/{Lib/os.py,Modules/posixmodule.c}.sketch
 ```
+
+## Dev instructions
+
+Install `tox` using your preferred package manager (`pip`, `conda`, `brew`)
+
+`$ tox` executes tests, checks formatting, linting and doc generation.
+Run `tox --listenvs` for all available tasks.
+
+To run tests for a specific Python version, use `tox -e py37` (need Python 3.7
+available in the PATH).

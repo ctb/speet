@@ -34,7 +34,8 @@ docs = [
     "sphinx >= 2.0.0, < 3",
     "pygments-github-lexers >= 0.0.5",
     "sphinxcontrib-autoprogram >= 0.1.5",
+    "recommonmark",
 ]
 
 [tool.isort]
-known_third_party = ["mmh3"]
+known_third_party = ["mmh3", "recommonmark"]
